@@ -1,0 +1,128 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+}
+
+type SigninPayload {
+    token: String!
+    user: User!
+}
+
+type Vehicle {
+    id: ID!
+    createdAt: Timestamp!
+    name: String
+    description: String
+    owner: String!
+    year: Int!
+    ownedSince: Int!
+    ownedTo: Int
+    market: Market
+    manufacturer: String!
+    model: String!
+    generation: String!
+    displacement: Float
+    engineType: EngineType
+    transmission: Transmission
+    drivetrain: Drivetrain
+    horsepower: Int
+}
+
+
+# Vehicle spec data
+type Manufacturer {
+    id: String!
+    name: String!
+    models: [Model]
+}
+
+type Model {
+    id: String!
+    name: String!
+    market: Market
+    generations: [Generation]
+}
+
+type Generation {
+    id: String!
+    name: String!
+    yearFrom: Int
+    yearTo: Int
+}
+
+scalar Timestamp
+
+enum Market {
+    JDM
+    NORTH_AMERICA
+    EUROPE
+    ASIA
+    AUSTRALIA
+}
+
+enum Drivetrain {
+    FWD
+    RWD
+    AWD
+}
+
+enum EngineType {
+    I2
+    I3
+    I4
+    I5
+    I6
+    V6
+    V8
+    V10
+    V12
+    W10
+    W16
+    HYBRID
+    ELECTRIC
+}
+
+enum Transmission {
+    AT
+    MT
+}
+
+input AuthData {
+    email: String!
+    password: String!
+}
+
+# The Root Query for the application
+type Query {
+    getUser: User
+
+    getVehicle(id: String!): Vehicle
+    getOwnVehicles: [Vehicle]
+
+    # Vehicle spec queries
+    getManufacturers: [Manufacturer]
+    getModels(manufacturerId: String!, market: Market): [Model]
+    getGenerations(modelId: String!): [Generation]
+
+
+}
+
+# The Root Mutation for the application
+type Mutation {
+    registerUser(name: String!, authProvider: AuthData!): User
+    loginUser(auth: AuthData): SigninPayload
+
+    createVehicle(name: String,
+        description: String,
+        year: Int!,
+        ownedSince: Int!,
+        ownedTo: Int,
+        generationId: String!,
+        displacement: Float,
+        engineType: EngineType,
+        transmission: Transmission,
+        drivetrain: Drivetrain,
+        horsepower: Int): String
+
+}
